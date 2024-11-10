@@ -1,3 +1,5 @@
+# Prime Vowel Mapping Project
+
 from sympy import primerange, factorint
 import itertools
 import matplotlib.pyplot as plt
@@ -6,17 +8,15 @@ import networkx as nx
 # Define mapping of primes to vowels (extended to avoid '?')
 prime_to_vowel = {
     1: 'A',
-    2: 'E',
+    2: 'Y',
     3: 'I',
     5: 'O',
     7: 'U'
 }
 
-# Fallback vowels to be used for higher primes
-fallback_vowels = ['A', 'E', 'I', 'O', 'U']
+fallback_vowels = ['A', 'E', 'I', 'O', 'U', 'Y']
 
 # Function to generate the vowel representation of a prime number
-# Extend this mapping using the corresponding first primes to their respective vowels
 def prime_to_vowel_string(primes):
     vowels = []
     for p in primes:
@@ -24,7 +24,7 @@ def prime_to_vowel_string(primes):
             vowels.append(prime_to_vowel[p])
         else:
             # Use fallback vowels in a repeating manner for higher primes
-            index = (p % len(fallback_vowels)) - 1
+            index = (p % len(fallback_vowels))
             vowels.append(fallback_vowels[index])
     return vowels
 
