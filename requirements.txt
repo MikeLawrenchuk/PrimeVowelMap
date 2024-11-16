@@ -49,7 +49,7 @@ pytesseract==0.3.10
 python-dateutil==2.8.2
 pytz==2023.3
 reportlab==4.0.4
-requests==2.31.0
+requests==2.32.2
 setuptools==70.0.0
 six==1.16.0
 sympy==1.12
