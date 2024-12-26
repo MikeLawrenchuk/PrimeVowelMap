@@ -4,11 +4,13 @@ from sympy import primerange, factorint
 import itertools
 import matplotlib.pyplot as plt
 import networkx as nx
+import plotly.graph_objs as go
+import plotly.io as pio
 
 # Define mapping of primes to vowels (extended to avoid '?')
 prime_to_vowel = {
     1: 'A',
-    2: 'Y',
+    2: 'E',
     3: 'I',
     5: 'O',
     7: 'U'
@@ -18,35 +20,54 @@ fallback_vowels = ['A', 'E', 'I', 'O', 'U', 'Y']
 
 # Function to generate the vowel representation of a prime number
 def prime_to_vowel_string(primes):
+    """
+    Map primes to vowel strings, with fallback for higher primes.
+
+    Parameters:
+        primes (list): List of prime numbers.
+
+    Returns:
+        list: List of corresponding vowels.
+    """
     vowels = []
     for p in primes:
         if p in prime_to_vowel:
             vowels.append(prime_to_vowel[p])
         else:
-            # Use fallback vowels in a repeating manner for higher primes
             index = (p % len(fallback_vowels))
             vowels.append(fallback_vowels[index])
     return vowels
 
 # Generate prime numbers in a range and apply vowel mapping
 def generate_vowel_mappings(limit):
-    primes = list(primerange(1, limit))  # Generate prime numbers up to 'limit'
+    """
+    Generate primes and their corresponding vowel mappings.
+
+    Parameters:
+        limit (int): Upper limit for prime generation.
+
+    Returns:
+        tuple: List of primes and their vowel mappings.
+    """
+    primes = list(primerange(1, limit))
     vowel_mappings = prime_to_vowel_string(primes)
     return primes, vowel_mappings
 
 # Define a function to compute composite values and map them to vowel representations
-# Also define specific mappings for primes like 11 = 'AA' and 13 = 'AI'
-def composite_vowel_mapping(primes, vowel_mappings):
+def generate_composite_vowel_mappings(primes, vowel_mappings):
+    """
+    Generate composites and their vowel mappings based on prime operations.
+
+    Parameters:
+        primes (list): List of prime numbers.
+        vowel_mappings (list): Corresponding vowel mappings.
+
+    Returns:
+        tuple: List of composites and their mappings.
+    """
     composites = []
     composite_mappings = []
-    
-    # Special cases for direct prime vowel combinations
-    special_prime_mappings = {
-        11: 'AA',
-        13: 'AI'
-    }
-    
-    # Generate composites by considering addition, multiplication, and exponentiation for each pair of primes
+
     for (p1, v1), (p2, v2) in itertools.combinations(zip(primes, vowel_mappings), 2):
         # Addition
         composite_sum = p1 + p2
@@ -61,67 +82,53 @@ def composite_vowel_mapping(primes, vowel_mappings):
         # Exponentiation (smaller prime raised to larger prime)
         if p1 < p2:
             composite_exp = p1 ** p2
-            composites.append(composite_exp)
-            composite_mappings.append(v1.upper() + v2.lower() + " (Exponentiation)")
         else:
             composite_exp = p2 ** p1
-            composites.append(composite_exp)
-            composite_mappings.append(v2.upper() + v1.lower() + " (Exponentiation)")
+        composites.append(composite_exp)
+        composite_mappings.append(v1.upper() + v2.lower() + " (Exponentiation)")
 
     return composites, composite_mappings
 
-# Define a visualization of vowel mappings
-# (for simplicity, just print them here)
+# Visualize vowel patterns
 def visualize_vowel_patterns(primes, vowel_mappings, composites, composite_mappings):
+    """
+    Display the mappings between primes, composites, and vowels.
+
+    Parameters:
+        primes (list): List of prime numbers.
+        vowel_mappings (list): Corresponding vowel mappings.
+        composites (list): List of composite numbers.
+        composite_mappings (list): Corresponding composite mappings.
+    """
     print("Prime Vowel Mapping:")
     for prime, vowel in zip(primes, vowel_mappings):
         print(f"{prime} -> {vowel}")
-    
+
     print("\nComposite Vowel Mapping:")
     for composite, mapping in zip(composites, composite_mappings):
         print(f"{composite} -> {mapping}")
 
-# Plotting the prime and composite relationships using an interactive graph with Plotly
-import plotly.graph_objs as go
-import plotly.io as pio
-
+# Plot vowel graph using Plotly
 def plot_vowel_graph(primes, vowel_mappings, composites, composite_mappings):
+    """
+    Plot an interactive graph showing prime and composite relationships.
+
+    Parameters:
+        primes (list): List of prime numbers.
+        vowel_mappings (list): Corresponding vowel mappings.
+        composites (list): List of composite numbers.
+        composite_mappings (list): Corresponding composite mappings.
+    """
     G = nx.Graph()
-    
+
     # Add nodes for primes
     for prime, vowel in zip(primes, vowel_mappings):
-        # Determine color based on the last digit of the prime
-        last_digit = prime % 10
-        if last_digit == 1:
-            node_color = 'red'
-        elif last_digit == 3:
-            node_color = 'blue'
-        elif last_digit == 7:
-            node_color = 'green'
-        elif last_digit == 9:
-            node_color = 'purple'
-        else:
-            node_color = 'skyblue'  # Default color for any other last digit
-        G.add_node(prime, label=vowel, color=node_color)
-    
+        G.add_node(prime, label=vowel)
+
     # Add edges for composites
     for (p1, p2), mapping in zip(itertools.combinations(primes, 2), composite_mappings):
-        # Determine the type of edge based on the operation in the mapping
-        composite = None
-        if "(Sum)" in mapping:
-            composite = p1 + p2
-            edge_style = 'solid'
-            edge_color = 'blue'
-        elif "(Product)" in mapping:
-            composite = p1 * p2
-            edge_style = 'dashed'
-            edge_color = 'red'
-        elif "(Exponentiation)" in mapping:
-            composite = p1 ** p2 if p1 < p2 else p2 ** p1
-            edge_style = 'dotted'
-            edge_color = 'green'
-        G.add_edge(p1, p2, label=mapping, color=edge_color)
-    
+        G.add_edge(p1, p2, label=mapping)
+
     # Convert NetworkX graph to Plotly format
     pos = nx.spring_layout(G)
     edge_x = []
@@ -133,7 +140,7 @@ def plot_vowel_graph(primes, vowel_mappings, composites, composite_mappings):
         edge_x.extend([x0, x1, None])
         edge_y.extend([y0, y1, None])
         edge_text.append(edge[2]['label'])
-    
+
     edge_trace = go.Scatter(
         x=edge_x,
         y=edge_y,
@@ -142,18 +149,16 @@ def plot_vowel_graph(primes, vowel_mappings, composites, composite_mappings):
         mode='lines',
         text=edge_text
     )
-    
+
     node_x = []
     node_y = []
     node_text = []
-    node_color = []
     for node in G.nodes(data=True):
         x, y = pos[node[0]]
         node_x.append(x)
         node_y.append(y)
         node_text.append(f"{node[0]} ({node[1]['label']})")
-        node_color.append(node[1]['color'])
-    
+
     node_trace = go.Scatter(
         x=node_x,
         y=node_y,
@@ -161,12 +166,12 @@ def plot_vowel_graph(primes, vowel_mappings, composites, composite_mappings):
         hoverinfo='text',
         marker=dict(
             size=10,
-            color=node_color,
+            color='blue',
             line_width=2
         ),
         text=node_text
     )
-    
+
     fig = go.Figure(data=[edge_trace, node_trace],
                  layout=go.Layout(
                     title='Interactive Prime and Composite Vowel Graph',
@@ -179,27 +184,74 @@ def plot_vowel_graph(primes, vowel_mappings, composites, composite_mappings):
                  ))
     pio.show(fig)
 
-# Function to find the prime factors of a number
+# Find prime factors of a number
 def find_prime_factors(number):
+    """
+    Find prime factors of a number.
+
+    Parameters:
+        number (int): The number to factorize.
+
+    Returns:
+        dict: Dictionary of prime factors and their powers.
+    """
     factors = factorint(number)
     print(f"Prime factors of {number}:")
     for prime, power in factors.items():
         print(f"{prime}^{power}")
     return factors
 
-# Main function to execute the exploration
+# Static plot with Matplotlib
+def plot_static_graph(primes, vowel_mappings, composites, composite_mappings):
+    """
+    Plot a static graph of prime and composite relationships using Matplotlib.
+
+    Parameters:
+        primes (list): List of prime numbers.
+        vowel_mappings (list): Corresponding vowel mappings.
+        composites (list): List of composite numbers.
+        composite_mappings (list): Corresponding composite mappings.
+    """
+    G = nx.Graph()
+    for prime, vowel in zip(primes, vowel_mappings):
+        G.add_node(prime, label=vowel)
+
+    for (p1, p2), mapping in zip(itertools.combinations(primes, 2), composite_mappings):
+        G.add_edge(p1, p2, label=mapping)
+
+    pos = nx.spring_layout(G)
+    labels = nx.get_node_attributes(G, 'label')
+    edge_labels = nx.get_edge_attributes(G, 'label')
+
+    plt.figure(figsize=(10, 8))
+    nx.draw(G, pos, with_labels=True, labels=labels, node_size=700, node_color='skyblue', font_size=10, font_weight='bold', edge_color='gray')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='red')
+    plt.show()
+
+# Main function
 def main():
-    limit = 20  # Set limit to generate primes within a range
-    primes, vowel_mappings = generate_vowel_mappings(limit)
-    composites, composite_mappings = composite_vowel_mapping(primes, vowel_mappings)
-    visualize_vowel_patterns(primes, vowel_mappings, composites, composite_mappings)
-    
-    # Example of finding prime factors before plotting
-    number_to_factor = int(input("Enter a number to find its prime factors: "))
-    find_prime_factors(number_to_factor)
-    
-    # Plot the graph after factoring
-    plot_vowel_graph(primes, vowel_mappings, composites, composite_mappings)
+    try:
+        limit = int(input("Enter the upper limit for prime generation: "))
+        if limit <= 0:
+            raise ValueError("Limit must be a positive integer.")
+
+        primes, vowel_mappings = generate_vowel_mappings(limit)
+        composites, composite_mappings = generate_composite_vowel_mappings(primes, vowel_mappings)
+        visualize_vowel_patterns(primes, vowel_mappings, composites, composite_mappings)
+
+        number_to_factor = int(input("Enter a number to find its prime factors: "))
+        find_prime_factors(number_to_factor)
+
+        visualization_choice = input("Choose visualization (static/interactive): ").strip().lower()
+        if visualization_choice == 'static':
+            plot_static_graph(primes, vowel_mappings, composites, composite_mappings)
+        elif visualization_choice == 'interactive':
+            plot_vowel_graph(primes, vowel_mappings, composites, composite_mappings)
+        else:
+            print("Invalid choice. Skipping visualization.")
+
+    except ValueError as e:
+        print(f"Invalid input: {e}")
 
 if __name__ == "__main__":
     main()

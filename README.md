@@ -1,63 +1,98 @@
 # Prime Vowel Mapping Project
 
-## Description
-This project explores relationships between prime numbers by mapping them 
-to vowel representations. The script performs the following tasks:
-- Maps prime numbers to vowels.
-- Generates composites from primes using different operations (addition, 
-multiplication, exponentiation).
-- Visualizes relationships between primes and composites using an 
-interactive graph.
-- Allows users to find the prime factors of a number.
+A Python program that maps prime numbers to vowels, generates composites through mathematical operations, and visualizes the relationships using graphs. It also includes utilities for prime factorization.
+
+---
 
 ## Features
-1. **Prime to Vowel Mapping**: Primes are mapped to vowels (A, E, I, O, U) 
-and extended using fallback vowels for higher primes.
-2. **Composite Generation**: Composite numbers are generated from pairs of 
-primes using addition, multiplication, and exponentiation.
-3. **Interactive Visualization**: The relationships are plotted using 
-Plotly, allowing for interactive exploration.
-4. **Prime Factorization**: Users can enter a number to find its prime 
-factors using the `factorint` method from SymPy.
+- **Prime-to-Vowel Mapping**: Assigns vowels to prime numbers and dynamically maps higher primes using fallback vowels.
+- **Composite Generation**: Creates composite numbers through addition, multiplication, and exponentiation of prime pairs.
+- **Visualization**:
+  - Static graphs using Matplotlib.
+  - Interactive graphs using Plotly.
+- **Prime Factorization**: Identifies the prime factors of a given number.
 
-## Usage
-1. **Run the Script**: To execute the project, simply run the 
-`prime-vowel.py` file.
-   ```bash
-   python prime-vowel.py
-   ```
-2. **Enter a Number**: When prompted, enter a number to find its prime 
-factors.
-3. **Interactive Graph**: After factoring, an interactive graph is 
-displayed showing relationships between prime numbers and their 
-composites.
+---
 
-## Dependencies
-- `sympy`: Used for generating primes and factorizing numbers.
-- `matplotlib`: Used for plotting (although now enhanced with Plotly).
-- `networkx`: Used for creating the graph structure.
-- `plotly`: Used for interactive visualization of the prime-composite 
-relationships.
+## Requirements
+The program requires the following Python packages:
 
-## Installation
-To install the necessary dependencies, run:
 ```bash
-pip install sympy matplotlib networkx plotly
+sympy==1.13.3
+matplotlib==3.9.2
+networkx==3.4.2
+plotly==5.24.1
 ```
 
-## Example
-- The script generates prime numbers up to a limit (`limit = 20` by 
-default).
-- Each prime is mapped to a vowel.
-- Pairs of primes are used to create composite values using addition, 
-multiplication, and exponentiation.
-- The relationships are visualized using an interactive Plotly graph.
+To install dependencies, run:
 
-## Project Files
-- **`prime-vowel.py`**: The main script to run the project.
-- **`.gitignore`**: Used to ignore unnecessary system files like 
-`.DS_Store`.
+```bash
+pip install -r requirements.txt
+```
 
-## How to Contribute
-If you want to contribute to this project, feel free to fork the 
-repository and submit a pull request.
+---
+
+## How to Run
+1. Clone the repository:
+
+   ```bash
+   git clone <repository_url>
+   cd PrimeVowelMap
+   ```
+
+2. Run the program:
+
+   ```bash
+   python prime_vowel_map.py
+   ```
+
+3. Follow the on-screen prompts:
+   - Enter an upper limit for generating primes.
+   - Enter a number to factorize.
+   - Choose a visualization method (static or interactive).
+
+---
+
+## Example Usage
+**Input**:
+- Upper limit for primes: `20`
+- Number to factorize: `30`
+- Visualization: `static`
+
+**Output**:
+- A list of primes and their vowel mappings.
+- Composite mappings based on mathematical operations.
+- Prime factors of the input number.
+- A graph visualizing relationships (static or interactive).
+
+---
+
+## Functions
+1. `generate_vowel_mappings(limit)`:
+   - Generates prime numbers up to the specified limit and maps them to vowels.
+
+2. `generate_composite_vowel_mappings(primes, vowel_mappings)`:
+   - Creates composites using addition, multiplication, and exponentiation.
+
+3. `plot_static_graph(primes, vowel_mappings, composites, composite_mappings)`:
+   - Visualizes relationships using Matplotlib.
+
+4. `plot_vowel_graph(primes, vowel_mappings, composites, composite_mappings)`:
+   - Visualizes relationships interactively using Plotly.
+
+5. `find_prime_factors(number)`:
+   - Finds the prime factors of a given number.
+
+---
+
+## Limitations
+- Large values for prime generation or exponentiation may cause performance issues.
+- Requires Python 3.8+ for compatibility.
+
+---
+
+## Future Enhancements
+- Optimize composite generation for larger numbers.
+- Add support for distributed computation of primes and composites.
+- Improve graph aesthetics for better clarity with large datasets.
+
