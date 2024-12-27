@@ -1,2 +1,19 @@
+# Ignore Python virtual environments
+venv/
+env/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore environment variable files
+.env
+
+# Ignore private key files
+*.pem
+*.key
+
+# Ignore macOS system files
 .DS_Store
+
 
