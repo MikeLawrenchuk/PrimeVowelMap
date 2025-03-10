@@ -1,6 +1,7 @@
 # Prime Vowel Mapping Project
 
 from sympy import primerange, factorint
+# from debug_utilities import debug_all
 import itertools
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -9,14 +10,27 @@ import plotly.io as pio
 
 # Define mapping of primes to vowels (extended to avoid '?')
 prime_to_vowel = {
-    1: 'A',
-    2: 'E',
-    3: 'I',
-    5: 'O',
-    7: 'U'
+    1: 'A',  # Last digit of some primes
+    3: 'I',  # Last digit of some primes
+    7: 'U',  # Last digit of some primes
+    9: 'O'   # Last digit of some primes (though less common)
 }
 
 fallback_vowels = ['A', 'E', 'I', 'O', 'U', 'Y']
+
+# Function to map a single prime number to a vowel
+def map_prime_to_vowel(prime):
+    # Extract the last digit of the prime number
+    last_digit = prime % 10
+    
+    # Check if there's a direct mapping for the last digit
+    if last_digit in prime_to_vowel:
+        return prime_to_vowel[last_digit]
+    else:
+        # Use fallback vowels in a cyclic manner
+        index = (prime % len(fallback_vowels))
+        return fallback_vowels[index]
+
 
 # Function to generate the vowel representation of a prime number
 def prime_to_vowel_string(primes):
@@ -182,7 +196,9 @@ def plot_vowel_graph(primes, vowel_mappings, composites, composite_mappings):
                     xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
                     yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
                  ))
-    pio.show(fig)
+       
+    # Save and open in a web browser
+    pio.write_html(fig, file='vowel_graph.html', auto_open=True)
 
 # Find prime factors of a number
 def find_prime_factors(number):

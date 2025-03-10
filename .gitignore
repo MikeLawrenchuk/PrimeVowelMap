@@ -4,6 +4,48 @@ env/
 
 # Ignore Python cache files
 __pycache__/
+*.py[cod]
+
+# Ignore environment variable files
+.env
+
+# Ignore private key files
+*.pem
+*.key
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore Windows system files
+Thumbs.db
+
+# Ignore build and distribution directories
+build/
+dist/
+*.egg-info/
+
+# Ignore test and coverage outputs
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Ignore IDE/editor specific files
+.vscode/
+.idea/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore log files
+*.log
+# Ignore Python virtual 
+environments
+venv/
+env/
+
+# Ignore Python cache files
+__pycache__/
 *.pyc
 
 # Ignore environment variable files
